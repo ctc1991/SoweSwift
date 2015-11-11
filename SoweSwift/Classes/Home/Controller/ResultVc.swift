@@ -24,26 +24,14 @@ class ResultVc: BaseVc, WKNavigationDelegate {
     }
     
     func setWebView() {
-        let js = "alert('123')"
-        let script =  WKUserScript(source: js, injectionTime: WKUserScriptInjectionTime.AtDocumentEnd, forMainFrameOnly: true)
-        let userContentController = WKUserContentController()
-        userContentController.addUserScript(script)
-        
-        let configuration = WKWebViewConfiguration()
-        configuration.userContentController = userContentController
-        webView = WKWebView.init(frame: UIScreen.mainScreen().bounds, configuration: configuration)
-//        webView = WKWebView.init(frame: UIScreen.mainScreen().bounds)
-        webView?.navigationDelegate = self;
-        view.addSubview(webView!)
-        jsHelper?.webView = webView;
-    }
+           }
     
     func webView(webView: WKWebView, didStartProvisionalNavigation navigation: WKNavigation!) {
         
     }
     
     func webView(webView: WKWebView, didFinishNavigation navigation: WKNavigation!) {
-        jsHelper?.hideJsClass("searchBox")
+       
         
         // 根据生成的WKUserScript对象，初始化WKWebViewConfiguration
         

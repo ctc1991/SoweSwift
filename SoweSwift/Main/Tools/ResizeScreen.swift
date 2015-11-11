@@ -8,21 +8,63 @@
 
 import UIKit
 
-let RATIO : CGFloat = 120/568.0
+let RATIO: CGFloat = 120/568.0
 
 class ResizeScreen: NSObject {
-    class func offsetY() ->CGFloat {
-        var y : CGFloat = 1;
+    class func offsetY() -> CGFloat {
+        var y : CGFloat = 0
         if (self.isIphone4orLess()) {
-            y = 100;
+            y = 100
         } else if (self.isIphone5()) {
-            y = 120;
+            y = 120
         } else if (self.isIphone6()) {
-            y = 667*RATIO;
+            y = 667*RATIO
         } else if (self.isIphone6p()) {
-            y = 736*RATIO;
+            y = 736*RATIO
         }
-        return y;
+        return y
+    }
+    
+    class func cellFontSize() -> CGFloat {
+        var y : CGFloat = 0
+        if (self.isIphone4orLess()) {
+            y = 19
+        } else if (self.isIphone5()) {
+            y = 19;
+        } else if (self.isIphone6()) {
+            y = 23
+        } else if (self.isIphone6p()) {
+            y = 26
+        }
+        return y
+    }
+    
+    class func searchFontSize() -> CGFloat {
+        var y : CGFloat = 0
+        if (self.isIphone4orLess()) {
+            y = 27
+        } else if (self.isIphone5()) {
+            y = 27;
+        } else if (self.isIphone6()) {
+            y = 32
+        } else if (self.isIphone6p()) {
+            y = 35
+        }
+        return y
+    }
+    
+    class func botFontSize() -> CGFloat {
+        var y : CGFloat = 0
+        if (self.isIphone4orLess()) {
+            y = 30
+        } else if (self.isIphone5()) {
+            y = 30;
+        } else if (self.isIphone6()) {
+            y = 35
+        } else if (self.isIphone6p()) {
+            y = 40
+        }
+        return y
     }
     
     class func isIphone4orLess() -> Bool {
