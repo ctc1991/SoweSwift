@@ -12,7 +12,7 @@ import UIKit
 class HomeVc: BaseVc
 , UITextFieldDelegate
 , UIScrollViewDelegate
-, ASCollectionViewDataSource {
+, UICollectionViewDataSource {
     var scrollNode: ASScrollNode?
     var backgroundImageNode : ASImageNode?
     var outNode: ASDisplayNode?
@@ -28,8 +28,8 @@ class HomeVc: BaseVc
     var isShow: Bool?
     var isTop: Bool?
     var lessThanZero: Bool?
-    var keywords = ["新闻", "职场", "美食", "风景", "鸡汤", "旅行", "娱乐", "体育"]
-    var collectionView: ASCollectionView?
+    var keywords = ["新闻", "职场", "美食", "风景","5", "风景", "鸡汤", "旅行", "娱乐", "体育"]
+    var collectionView: UICollectionView?
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -128,16 +128,19 @@ class HomeVc: BaseVc
     }
     func setMidNode() {
         midNode = setScrollNodeSubview(CGRectMake(0, offsetY*3, SCREEN_WIDTH, (SCREEN_HEIGHT-2.5*offsetY)))
-        midNode?.view.addGestureRecognizer(UITapGestureRecognizer(target: self, action: "showTextField"))
+        midNode?.view.addGestureRecognizer(UITapGestureRecognizer(target: self, action: "hideTextField"))
         
-        collectionView = ASCollectionView?()
         let width = min(midNode!.bounds.size.width-80, midNode!.bounds.size.height)
-        collectionView!.frame = CGRectMake(0, 0, width, width)
+        let flowLayout = UICollectionViewFlowLayout()
+        flowLayout.itemSize = CGSizeMake(width/3.6, width/3.6)
+        flowLayout.scrollDirection = UICollectionViewScrollDirection.Vertical
+        collectionView = UICollectionView(frame: CGRectMake(0, 0, width, width), collectionViewLayout: flowLayout)
         collectionView!.center = CGPointMake((midNode?.view.center.x)!, (collectionView?.center.y)!)
         collectionView?.backgroundColor = UIColor.clearColor()
         collectionView?.showsHorizontalScrollIndicator = false
         collectionView?.showsVerticalScrollIndicator = false
-        collectionView?.asyncDataSource = self
+        collectionView?.dataSource = self
+        collectionView?.registerClass(HomeCell.self, forCellWithReuseIdentifier: "HomeCell")
         midNode?.view.addSubview(collectionView!)
     }
     func setBotNode() {
@@ -150,7 +153,7 @@ class HomeVc: BaseVc
             scrollNode!.view.scrollEnabled = false
             let animOffset = POPSpringAnimation(propertyNamed: kPOPScrollViewContentOffset)
             animOffset.toValue = NSValue(CGPoint: CGPointMake(0, 0))
-            animOffset.springBounciness = 15
+            animOffset.springBounciness = 8
             animOffset.springSpeed = 10
             scrollNode?.view.pop_removeAllAnimations()
             scrollNode?.view.pop_addAnimation(animOffset, forKey: "showTextField")
@@ -166,13 +169,14 @@ class HomeVc: BaseVc
             animAlpha.toValue = 0.0
             searchNode?.view.pop_removeAllAnimations()
             searchNode?.view.pop_addAnimation(animAlpha, forKey: "animAlpha")
+            midNode?.view.pop_removeAllAnimations()
+            midNode?.view.pop_addAnimation(animAlpha, forKey: "animAlpha")
             
             let animScale = POPBasicAnimation(propertyNamed: kPOPViewSize)
             animScale.duration = 0.4
-            animScale.toValue = NSValue(CGSize: CGSizeMake(view.bounds.size.width*1.5,view.bounds.size.height*1.5))
+            animScale.toValue = NSValue(CGSize: CGSizeMake(view.bounds.size.width*1.7, view.bounds.size.height*1.7))
             backgroundImageNode?.view.pop_addAnimation(animScale, forKey: "scale0")
         }
-
     }
     
     func hideTextField() {
@@ -188,7 +192,7 @@ class HomeVc: BaseVc
             
             let animAlpha2 = POPBasicAnimation(propertyNamed: kPOPViewAlpha)
             animAlpha2.toValue = 0.0
-            animAlpha2.duration = 0.5;
+            animAlpha2.duration = 0.1;
             topNode?.view.pop_removeAllAnimations()
             topNode?.view.pop_addAnimation(animAlpha2, forKey: "animAlpha")
             
@@ -197,6 +201,8 @@ class HomeVc: BaseVc
             animAlpha.duration = 0.3;
             searchNode?.view.pop_removeAllAnimations()
             searchNode?.view.pop_addAnimation(animAlpha, forKey: "animAlpha2")
+            midNode?.view.pop_removeAllAnimations()
+            midNode?.view.pop_addAnimation(animAlpha, forKey: "animAlpha")
             
             let animScale = POPBasicAnimation(propertyNamed: kPOPViewSize)
             animScale.duration = 0.2
@@ -211,7 +217,7 @@ class HomeVc: BaseVc
     }
     func scrollViewDidScroll(scrollView: UIScrollView) {
         var ratio = (offsetY - scrollView.contentOffset.y)/offsetY
-        ratio = (0.5+ratio) > 1.8 ? 1.8 : (0.5+ratio)
+        ratio = (0.7+ratio) > 2 ? 2 : (0.7+ratio)
         ratio = ratio < 1 ? 1 : ratio
         
         let animScale = POPBasicAnimation(propertyNamed: kPOPViewSize)
@@ -219,7 +225,7 @@ class HomeVc: BaseVc
         animScale.toValue = NSValue(CGSize: CGSizeMake(view.bounds.size.width*ratio,view.bounds.size.height*ratio))
         backgroundImageNode?.view.pop_addAnimation(animScale, forKey: "scale")
         
-        print(ratio)
+//        print(ratio)
         if (scrollView.tag == 10086) {
             if (scrollView.contentOffset.y > offsetY) {
                 scrollView.contentOffset = CGPointMake(0, offsetY)
@@ -236,8 +242,16 @@ class HomeVc: BaseVc
             }
         }
     }
-    
-    func collectionView(collectionView: UICollectionView!, numberOfItemsInSection section: Int) -> Int {
-        return 10
+    func textFieldDidEndEditing(textField: UITextField) {
+        hideTextField()
+    }
+    func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return 9
+    }
+    func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
+        let cell: HomeCell = (collectionView.dequeueReusableCellWithReuseIdentifier("HomeCell", forIndexPath: indexPath) as? HomeCell)!
+        cell.initSelf()
+        cell.textLabel?.text = keywords[indexPath.item]
+        return cell
     }
 }
