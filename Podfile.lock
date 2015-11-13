@@ -2,14 +2,17 @@ PODS:
   - AsyncDisplayKit (1.9.1):
     - AsyncDisplayKit/ASDealloc2MainObject (= 1.9.1)
   - AsyncDisplayKit/ASDealloc2MainObject (1.9.1)
+  - MJRefresh (3.0.2)
   - pop (1.0.8)
 
 DEPENDENCIES:
   - AsyncDisplayKit
+  - MJRefresh
   - pop (~> 1.0)
 
 SPEC CHECKSUMS:
   AsyncDisplayKit: 7bf2b3fa444284f80fd0c1e36655e324549f79d2
+  MJRefresh: 85377dc8c70395cf329e102a5c55505ef387c2e1
   pop: bb773ae2c791ca2629de13b347e7a8b450fa6a57
 
 COCOAPODS: 0.39.0

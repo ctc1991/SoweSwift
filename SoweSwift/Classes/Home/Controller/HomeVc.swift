@@ -9,11 +9,11 @@
 import UIKit
 
 
-class HomeVc: BaseVc
-    , UITextFieldDelegate
-    , UIScrollViewDelegate
-    , UICollectionViewDataSource
-, TapCellLabelDelegate {
+class HomeVc: BaseVc,
+    UITextFieldDelegate,
+    UIScrollViewDelegate,
+    UICollectionViewDataSource,
+    TapCellLabelDelegate {
     var scrollNode: ASScrollNode?
     var backgroundImageNode : ASImageNode?
     var outNode: ASDisplayNode?
@@ -36,7 +36,6 @@ class HomeVc: BaseVc
         // Do any additional setup after loading the view.
         initUI()
     }
-    
     /** 初始化UI */
     func initUI() {
         setImageNode()
@@ -150,7 +149,6 @@ class HomeVc: BaseVc
     func setBotNode() {
         botNode = setScrollNodeSubview(CGRectMake(0, SCREEN_HEIGHT+0.5*offsetY, SCREEN_WIDTH, offsetY*0.5))
     }
-    
     func showTextField() {
         textField?.becomeFirstResponder()
         
@@ -184,7 +182,6 @@ class HomeVc: BaseVc
         searchMaskNode?.hidden = false
         
     }
-    
     func hideTextField() {
         textField?.resignFirstResponder()
         
@@ -216,23 +213,18 @@ class HomeVc: BaseVc
         backgroundImageNode?.view.pop_addAnimation(animScale, forKey: "scale01")
         
         searchMaskNode?.hidden = true
-        
     }
-    
     func removeTap(forNode node:ASDisplayNode) {
         for tap: UIGestureRecognizer in node.view.gestureRecognizers! {
             node.view.removeGestureRecognizer(tap)
         }
     }
-    
     func clearTextField() {
         textField?.text = ""
     }
-
-    func search(var keyword keyword: String) {
+    func search(keyword keyword: String) {
         let vc = ResultVc()
-        keyword = keyword.stringByAddingPercentEncodingWithAllowedCharacters(NSCharacterSet.URLHostAllowedCharacterSet())!
-        vc.urlString = "http://weixin.sogou.com/weixinwap?type=2&query=\(keyword)&page=1"
+        vc.keyword = keyword
         self.presentViewController(UINavigationController(rootViewController: vc), animated: true, completion: nil)
     }
     func scrollViewDidScroll(scrollView: UIScrollView) {
@@ -265,6 +257,10 @@ class HomeVc: BaseVc
     func textFieldDidEndEditing(textField: UITextField) {
         hideTextField()
     }
+    func textFieldShouldReturn(textField: UITextField) -> Bool {
+        search(keyword: textField.text!)
+        return true
+    }
     func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return 9
     }
@@ -282,7 +278,9 @@ class HomeVc: BaseVc
         return cell
     }
     func tapCellLabel(didSelectLabel selectIndex: Int) {
-        if (selectIndex != 4) {
+        if (selectIndex == 4) {
+            showTextField()
+        } else {
             print(keywords[selectIndex])
             search(keyword: keywords[selectIndex])
         }
