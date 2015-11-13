@@ -16,5 +16,7 @@ class BaseVc: UIViewController {
         // Do any additional setup after loading the view.
     }
 
-    
+    func setTextAttributes(forBarButtonItem barButtonItem:UIBarButtonItem, fontSize:CGFloat) {
+        barButtonItem.setTitleTextAttributes([NSFontAttributeName : UIFont(name: "iconfont", size: fontSize)!,NSForegroundColorAttributeName : UIColor.blackColor()], forState: UIControlState.Normal)
+    }
 }

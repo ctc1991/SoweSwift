@@ -26,5 +26,8 @@ class TCJavascriptHelper: NSObject {
     func hideElement(className className:String, index:Int) {
         runJsCode(code: "document.getElementsByClassName('\(className)')[\(index)].style.display='none'")
     }
+    func hideElement(elementId elementId:String) {
+        runJsCode(code: "document.getElementById('\(elementId)').style.display='none'")
+    }
 
 }

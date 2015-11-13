@@ -17,6 +17,8 @@ UITextFieldDelegate {
     var noResultImageNode: ASImageNode?
     var jsHelper: TCJavascriptHelper?
     var textField: UITextField?
+    var articles: NSMutableArray?
+    var tempArticleModel: TCWeChatArticleModel?
     let SCREEN_WIDTH = UIScreen.mainScreen().bounds.size.width
     let SCREEN_HEIGHT = UIScreen.mainScreen().bounds.size.height
 
@@ -24,6 +26,7 @@ UITextFieldDelegate {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
         view.backgroundColor = UIColor.whiteColor()
+        articles = NSMutableArray()
         setWebView()
         search(keyword: keyword!)
         
@@ -39,8 +42,13 @@ UITextFieldDelegate {
         noResultImageNode?.backgroundColor = UIColor.lightGrayColor()
         webView?.addSubnode(noResultImageNode)
     }
-    func setNavigationBar() {
+    override func viewWillAppear(animated: Bool) {
+        super.viewWillAppear(animated)
         navigationController?.navigationBar.setBackgroundImage(TCAppUtils.imageWithColor(UIColor(red: 0, green: 0, blue: 0, alpha: 0.99), size: CGSize(width: SCREEN_WIDTH, height: 64)), forBarMetrics: UIBarMetrics.Default)
+        navigationController?.navigationBarHidden = false
+    }
+    func setNavigationBar() {
+        
         
         
         let leftBtn = UIBarButtonItem(title: "\u{e604}", style: UIBarButtonItemStyle.Done, target: self, action: "dismiss")
@@ -103,7 +111,7 @@ UITextFieldDelegate {
         if (urlString.hasPrefix("http://mp.weixin.qq.com/")) {
             let vc = WXArticleVc()
             vc.urlString = urlString
-            navigationController?.pushViewController(vc, animated: true)
+            navigationController?.pushViewController(vc, animated: false)
             webView.alpha = 1
             return false
         } else if (urlString.hasPrefix("http://yibo.iyiyun.com")) {
@@ -114,6 +122,8 @@ UITextFieldDelegate {
             //反蜘蛛
         } else if (urlString.hasPrefix("http://weixin.sogou.com/weixinwap")) {
             //查询基本页
+            articles?.removeAllObjects()
+            articles = TCWeChatParse.articleModelsWithUrlString(urlString)
         } else if (urlString.hasPrefix("http://weixin.sogou.com/websearch")) {
             //请求文章页
         }
