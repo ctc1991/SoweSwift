@@ -13,7 +13,7 @@
 #import <AsyncDisplayKit/AsyncDisplayKit.h>
 #import "TCAppUtils.h"
 #import <MJRefresh.h>
-#import "TCWeChatParse.h"
+
 
 
 #endif /* sowe_Bridging_Header_h_h */

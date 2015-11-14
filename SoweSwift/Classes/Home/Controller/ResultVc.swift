@@ -18,7 +18,7 @@ UITextFieldDelegate {
     var jsHelper: TCJavascriptHelper?
     var textField: UITextField?
     var articles: NSMutableArray?
-    var tempArticleModel: TCWeChatArticleModel?
+    var tempArticleModel: TCWeChatModel?
     let SCREEN_WIDTH = UIScreen.mainScreen().bounds.size.width
     let SCREEN_HEIGHT = UIScreen.mainScreen().bounds.size.height
 
@@ -30,7 +30,7 @@ UITextFieldDelegate {
         setWebView()
         search(keyword: keyword!)
         
-
+        
         setNavigationBar()
         textField?.text = keyword
         
@@ -123,9 +123,22 @@ UITextFieldDelegate {
         } else if (urlString.hasPrefix("http://weixin.sogou.com/weixinwap")) {
             //查询基本页
             articles?.removeAllObjects()
-            articles = TCWeChatParse.articleModelsWithUrlString(urlString)
+            TCWeChatParse.articles(urlString: urlString, completion: { (articles) -> Void in
+                self.articles = articles
+            })
         } else if (urlString.hasPrefix("http://weixin.sogou.com/websearch")) {
             //请求文章页
+
+            
+            for var index=0; index<self.articles!.count; index++ {
+                let model = self.articles?.objectAtIndex(index) as! TCWeChatModel
+                let sg10_1 = TCWeChatParse.sg10(model.urlString!)
+                let sg10_2 = TCWeChatParse.sg10(urlString)
+                if (sg10_1 == sg10_2) {
+                    print("horry")
+                }
+            }
+         
         }
         noResultImageNode?.hidden = true
         return true
@@ -157,8 +170,6 @@ UITextFieldDelegate {
         webView.pop_addAnimation(anim, forKey: "to1")
     }
     func scrollViewDidScroll(scrollView: UIScrollView) {
-        print("offset\(scrollView.contentOffset.y)")
-        print("height\(scrollView.contentSize.height)")
         textField!.resignFirstResponder()
     }
     func textFieldShouldReturn(textField: UITextField) -> Bool {
