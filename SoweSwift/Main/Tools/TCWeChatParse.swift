@@ -39,8 +39,8 @@ class TCWeChatParse {
     }
     class func sg10(string:String) -> String {
         let str = NSArray(array: string.componentsSeparatedByString("sg=")).objectAtIndex(1) as! String
-        let nsStr = NSString(format: "%@", str)
-        nsStr.substringToIndex(10)
+        var nsStr = NSString(format: "%@", str)
+        nsStr = nsStr.substringToIndex(10)
         return nsStr as String
     }
 }
@@ -51,6 +51,14 @@ class TCWeChatModel {
     var nickname: String?
     var time: Double?
     
+    func showSelf() {
+        print("urlString:"+urlString!)
+        print("image:"+image!)
+        print("title:"+title!)
+        print("nickname:"+nickname!)
+        print("time:\(time!)\n")
+    }
+    
     class func article(dataString dataString:String) -> TCWeChatModel {
         let model = TCWeChatModel()
         model.urlString = string(leadingString: "<a class=\"news_lst_tab2\" href=\"", tailingString: "\" uigs_exp_id", forString: dataString)
@@ -58,17 +66,18 @@ class TCWeChatModel {
             model.urlString = "http://weixin.sogou.com" + model.urlString!
             model.image = string(leadingString: "url=", tailingString: "\"></div>\n", forString: string(leadingString: "this.parentNode", tailingString: "<div class=\"news_txt_box2\">", forString: dataString))
         } else {
-            model.image = string(leadingString: "url=", tailingString: "\"></div>\n<div class=\"news_txt_box2\">", forString: dataString)
+            model.image = string(leadingString: "url=http", tailingString: "\"></div>\n<div class=\"news_txt_box2\">", forString: dataString)
         }
         model.title = htmlEntityDecode(forString: string(leadingString: "40px\">", tailingString: "</p>\n<p class=\"news_lst_txt3\" style=\"display:none;\">", forString: dataString))
         model.nickname = htmlEntityDecode(forString: string(leadingString: "title=\"", tailingString: "\" i=\"", forString: dataString))
         model.time = Double(string(leadingString: "\" t=\"", tailingString: "\">\n<span target=\"", forString: dataString))
+//        model.showSelf()
         return model
     }
     
     class func string(leadingString leadingString: String,tailingString: String, forString string:String) -> String {
         let str = NSArray(array: string.componentsSeparatedByString(leadingString)).objectAtIndex(1)
-        return NSArray(array: str.componentsSeparatedByString(leadingString)).objectAtIndex(0) as! String
+        return NSArray(array: str.componentsSeparatedByString(tailingString)).objectAtIndex(0) as! String
     }
     /**HTML转义*/
     class func htmlEntityDecode(var forString string:String) -> String {

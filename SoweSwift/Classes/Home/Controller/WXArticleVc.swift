@@ -13,31 +13,55 @@ UIWebViewDelegate,
 UIGestureRecognizerDelegate {
     var urlString: String?
     var webView: UIWebView?
+    var floatNode: ASDisplayNode?
     var jsHelper: TCJavascriptHelper?
     let SCREEN_WIDTH = UIScreen.mainScreen().bounds.size.width
     let SCREEN_HEIGHT = UIScreen.mainScreen().bounds.size.height
-    var bottomBtn: UIBarButtonItem?
+    var bottomBtn: UIButton?
+    var topBtn: UIButton?
     var topNode: ASDisplayNode?
+    var model: TCWeChatModel?
 
     override func viewDidLoad() {
         super.viewDidLoad()
-
         // Do any additional setup after loading the view.
-        
-
+        model?.showSelf()
         initUI()
         webView?.loadRequest(NSURLRequest(URL: NSURL(string: urlString!)!))
         navigationController?.interactivePopGestureRecognizer?.delegate = self
     }
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
-        navigationController?.navigationBarHidden = true
     }
     func initUI() {
-        setToolbar()
-         setWebView()
-        setTopNode()
-
+//        setToolbar()
+        setWebView()
+//        setTopNode()
+        setFloatNode()
+        setNavigationBar()
+    }
+    func setFloatNode() {
+        floatNode = ASDisplayNode()
+        floatNode?.frame = CGRect(x: SCREEN_WIDTH-54, y: SCREEN_HEIGHT-150, width: 44, height: 100)
+        view.addSubnode(floatNode)
+        
+        topBtn = UIButton(type: UIButtonType.Custom)
+        topBtn!.frame = CGRect(x: 0, y: 0, width: 44, height: 44)
+        topBtn!.titleLabel?.font = UIFont(name: "iconfont", size: 25)
+        topBtn!.setTitle("\u{e60E}", forState: UIControlState.Normal)
+        topBtn!.backgroundColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.3)
+        topBtn!.addTarget(self, action: "goToTop", forControlEvents: UIControlEvents.TouchUpInside)
+        floatNode?.view.addSubview(topBtn!)
+        
+        bottomBtn = UIButton(type: UIButtonType.Custom)
+        bottomBtn!.frame = CGRect(x: 0, y: 56, width: 44, height: 44)
+        bottomBtn!.titleLabel?.font = UIFont(name: "iconfont", size: 25)
+        bottomBtn!.setTitle("\u{e602}", forState: UIControlState.Normal)
+        bottomBtn!.backgroundColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.3)
+        bottomBtn!.addTarget(self, action: "goToBottom", forControlEvents: UIControlEvents.TouchUpInside)
+        floatNode?.view.addSubview(bottomBtn!)
+        
+        
     }
     func setTopNode() {
         topNode = ASDisplayNode()
@@ -67,11 +91,10 @@ UIGestureRecognizerDelegate {
         view.addSubview(nameLbl)
     }
     func setWebView() {
-        webView = UIWebView(frame: CGRectMake(0, 92, SCREEN_WIDTH, SCREEN_HEIGHT-44-64-16-12))
+        webView = UIWebView(frame: CGRectMake(0, 64, SCREEN_WIDTH, SCREEN_HEIGHT-64))
         webView?.delegate = self
         view.addSubview(webView!)
         webView!.backgroundColor = UIColor.whiteColor()
-        webView?.scrollView.showsVerticalScrollIndicator = false
         jsHelper = TCJavascriptHelper()
         jsHelper?.webView = webView
         
@@ -87,31 +110,51 @@ UIGestureRecognizerDelegate {
 //        webView?.scrollView.contentOffset = CGPoint(x: 0, y: -100)
     }
     func setToolbar() {
-        let toolBar = UIToolbar(frame: CGRect(x: 0, y: SCREEN_HEIGHT-44, width: SCREEN_WIDTH, height: 44))
-        view.addSubview(toolBar)
+//        let toolBar = UIToolbar(frame: CGRect(x: 0, y: SCREEN_HEIGHT-44, width: SCREEN_WIDTH, height: 44))
+//        view.addSubview(toolBar)
+//        
+//        let backBtn = UIBarButtonItem(title: "\u{e601}", style: UIBarButtonItemStyle.Done, target: self, action: "back")
+//        let shareBtn = UIBarButtonItem(title: "\u{e600}", style: UIBarButtonItemStyle.Done, target: self, action: "share")
+//        bottomBtn = UIBarButtonItem(title: "\u{e602}", style: UIBarButtonItemStyle.Done, target: self, action: "goToBottom")
+//        let topBtn = UIBarButtonItem(title: "\u{e60E}", style: UIBarButtonItemStyle.Done, target: self, action: "goToTop")
+//        let weChatBtn = UIBarButtonItem(title: "\u{e60B}", style: UIBarButtonItemStyle.Done, target: self, action: "goToWeChat")
+//        
+//        
+//        
+//        setTextAttributes(forBarButtonItem: backBtn, fontSize: 25)
+//        setTextAttributes(forBarButtonItem: shareBtn, fontSize: 25)
+//        setTextAttributes(forBarButtonItem: bottomBtn!, fontSize: 25)
+//        setTextAttributes(forBarButtonItem: topBtn, fontSize: 25)
+//        setTextAttributes(forBarButtonItem: weChatBtn, fontSize: 25)
+//        
+//        let line = UIView(frame: CGRect(x: 0, y: 0, width: SCREEN_WIDTH, height: 1))
+//        line.backgroundColor = UIColor.blackColor()
+//        toolBar.addSubview(line)
+//        
+//        let flexItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.FlexibleSpace, target: nil, action: nil)
+//        let fixedItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.FixedSpace, target: nil, action: nil)
+//        
+//        toolBar.setItems([fixedItem,backBtn,flexItem,shareBtn,flexItem,topBtn,flexItem,bottomBtn!,fixedItem], animated: false)
+    }
+    func setNavigationBar() {
         
-        let backBtn = UIBarButtonItem(title: "\u{e601}", style: UIBarButtonItemStyle.Done, target: self, action: "back")
-        let shareBtn = UIBarButtonItem(title: "\u{e600}", style: UIBarButtonItemStyle.Done, target: self, action: "share")
-        bottomBtn = UIBarButtonItem(title: "\u{e602}", style: UIBarButtonItemStyle.Done, target: self, action: "goToBottom")
-        let topBtn = UIBarButtonItem(title: "\u{e60E}", style: UIBarButtonItemStyle.Done, target: self, action: "goToTop")
-        let weChatBtn = UIBarButtonItem(title: "\u{e60B}", style: UIBarButtonItemStyle.Done, target: self, action: "goToWeChat")
+        navigationController?.navigationBar.tintColor = UIColor.whiteColor()
         
         
+        let rightBtn = UIBarButtonItem(title: "\u{e610}", style: UIBarButtonItemStyle.Done, target: self, action: "share")
+        rightBtn.setTitleTextAttributes([NSFontAttributeName : UIFont(name: "iconfont", size: 32)!,NSForegroundColorAttributeName : UIColor.whiteColor()], forState: UIControlState.Normal)
+        navigationItem.rightBarButtonItem = rightBtn
         
-        setTextAttributes(forBarButtonItem: backBtn, fontSize: 25)
-        setTextAttributes(forBarButtonItem: shareBtn, fontSize: 25)
-        setTextAttributes(forBarButtonItem: bottomBtn!, fontSize: 25)
-        setTextAttributes(forBarButtonItem: topBtn, fontSize: 25)
-        setTextAttributes(forBarButtonItem: weChatBtn, fontSize: 25)
-        
-        let line = UIView(frame: CGRect(x: 0, y: 0, width: SCREEN_WIDTH, height: 1))
-        line.backgroundColor = UIColor.blackColor()
-        toolBar.addSubview(line)
-        
-        let flexItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.FlexibleSpace, target: nil, action: nil)
-        let fixedItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.FixedSpace, target: nil, action: nil)
-        
-        toolBar.setItems([fixedItem,backBtn,flexItem,shareBtn,flexItem,topBtn,flexItem,bottomBtn!,fixedItem], animated: false)
+//        textField = UITextField(frame: CGRect(x: SCREEN_WIDTH/4.0, y: 0, width: SCREEN_WIDTH/2.0, height: 40))
+//        textField!.backgroundColor = UIColor.clearColor()
+//        textField!.placeholder = "点击搜索"
+//        textField!.textColor = UIColor.whiteColor()
+//        textField!.textAlignment = NSTextAlignment.Center
+//        textField!.tintColor = UIColor.whiteColor()
+//        textField!.delegate = self
+//        textField?.font = UIFont.boldSystemFontOfSize(20)
+//        textField!.setValue(UIColor.whiteColor(), forKeyPath: "_placeholderLabel.textColor")
+//        navigationController?.navigationBar.addSubview(textField!)
     }
     func refresh() {
             webView?.reload()
@@ -144,9 +187,9 @@ UIGestureRecognizerDelegate {
     }
     func webViewDidFinishLoad(webView: UIWebView) {
 
-        jsHelper?.hideElement(elementId: "activity-name")
+//        jsHelper?.hideElement(elementId: "activity-name")
         jsHelper?.hideElement(elementId: "js_view_source")
-        jsHelper?.hideElement(className: "rich_media_meta_list")
+//        jsHelper?.hideElement(className: "rich_media_meta_list")
     }
 
 
