@@ -91,7 +91,7 @@ UIGestureRecognizerDelegate {
         view.addSubview(nameLbl)
     }
     func setWebView() {
-        webView = UIWebView(frame: CGRectMake(0, 64, SCREEN_WIDTH, SCREEN_HEIGHT-64))
+        webView = UIWebView(frame: CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT))
         webView?.delegate = self
         view.addSubview(webView!)
         webView!.backgroundColor = UIColor.whiteColor()
@@ -173,7 +173,7 @@ UIGestureRecognizerDelegate {
     }
     func goToTop() {
         let goToTop = POPSpringAnimation(propertyNamed: kPOPScrollViewContentOffset)
-        goToTop.toValue = NSValue(CGPoint: CGPointMake(0, 0))
+        goToTop.toValue = NSValue(CGPoint: CGPointMake(0, -64))
         goToTop.springBounciness = 10
         goToTop.springSpeed = 20
         webView?.scrollView.pop_addAnimation(goToTop, forKey: "goToTop")
