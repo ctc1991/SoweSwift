@@ -27,7 +27,7 @@ class HomeVc: BaseVc,
     let SCREEN_WIDTH = UIScreen.mainScreen().bounds.size.width
     let SCREEN_HEIGHT = UIScreen.mainScreen().bounds.size.height
     let offsetY = ResizeScreen.offsetY()
-    var keywords = ["新闻", "职场", "美食", "风景","\u{e607}", "风景", "鸡汤", "旅行", "娱乐", "体育"]
+    var keywords = ["新闻", "职场", "美食", "风景","\u{e607}", "鸡汤", "旅行", "娱乐", "体育"]
     var collectionView: UICollectionView?
     
     override func viewDidLoad() {

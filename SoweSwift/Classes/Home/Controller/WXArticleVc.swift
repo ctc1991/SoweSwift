@@ -21,6 +21,8 @@ UIGestureRecognizerDelegate {
     var topBtn: UIButton?
     var topNode: ASDisplayNode?
     var model: TCWeChatModel?
+    var textField: UITextField?
+    var nickname: String?
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -32,6 +34,7 @@ UIGestureRecognizerDelegate {
     }
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
+        textField?.text = nickname
     }
     func initUI() {
 //        setToolbar()
@@ -103,11 +106,11 @@ UIGestureRecognizerDelegate {
         viewTest.backgroundColor = UIColor.redColor()
 //        webView?.scrollView.addSubview(viewTest)
         
-//        webView?.scrollView.mj_header = MJRefreshNormalHeader(refreshingBlock: { () -> Void in
-//            self.refresh()
-//            self.webView?.scrollView.mj_header.endRefreshing()
-//        })
-//        webView?.scrollView.contentOffset = CGPoint(x: 0, y: -100)
+        webView?.scrollView.mj_header = MJRefreshNormalHeader(refreshingBlock: { () -> Void in
+            self.refresh()
+            self.webView?.scrollView.mj_header.endRefreshing()
+        })
+        webView?.scrollView.contentOffset = CGPoint(x: 0, y: -64)
     }
     func setToolbar() {
 //        let toolBar = UIToolbar(frame: CGRect(x: 0, y: SCREEN_HEIGHT-44, width: SCREEN_WIDTH, height: 44))
@@ -185,11 +188,27 @@ UIGestureRecognizerDelegate {
     func goToWeChat() {
         
     }
+    func webViewDidStartLoad(webView: UIWebView) {
+        TCProgressView.show()
+        TCProgressView.setPosition(TCProgressViewPosition.StatusBarAndNavigationBar)
+    }
+    func webView(webView: UIWebView, didFailLoadWithError error: NSError?) {
+        TCProgressView.dismiss()
+    }
     func webViewDidFinishLoad(webView: UIWebView) {
+        TCProgressView.dismiss()
 
 //        jsHelper?.hideElement(elementId: "activity-name")
         jsHelper?.hideElement(elementId: "js_view_source")
 //        jsHelper?.hideElement(className: "rich_media_meta_list")
+        textField?.text = jsHelper?.element(elementId: "post-user")
+        nickname = textField!.text
+        if (nickname == model?.nickname) {
+            //信息对称 分享才用图
+            print("nickname相等")
+        } else {
+            print("信息不对称")
+        }
     }
 
 

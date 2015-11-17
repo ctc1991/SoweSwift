@@ -45,6 +45,7 @@ UITextFieldDelegate {
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         textField?.text = keyword
+        textField!.placeholder = "点击搜索"
         textField?.enabled = true
     }
     func setNavigationBar() {
@@ -123,24 +124,14 @@ UITextFieldDelegate {
             vc.urlString = urlString
             vc.model = tempArticleModel
             vc.model?.urlString = urlString
-            textField?.text = tempArticleModel?.nickname
+            vc.textField = textField
+            textField?.text = ""
+            textField!.placeholder = ""
             textField?.enabled = false
             navigationController?.pushViewController(vc, animated: true)
             webView.alpha = 1
             return false
-        } else if (urlString.hasPrefix("http://yibo.iyiyun.com")) {
-            //查询无结果
-            noResultImageNode!.hidden = false
-            return false
-        } else if (urlString.hasPrefix("http://weixin.sogou.com/antispider")) {
-            //反蜘蛛
-        } else if (urlString.hasPrefix("http://weixin.sogou.com/weixinwap")) {
-            //查询基本页
-            articles?.removeAllObjects()
-            TCWeChatParse.articles(urlString: urlString, completion: { (articles) -> Void in
-                self.articles = articles
-            })
-        } else if (urlString.hasPrefix("http://weixin.sogou.com/websearch")) {
+        }  else if (urlString.hasPrefix("http://weixin.sogou.com/websearch")) {
             //请求文章页
             for var index=0; index<self.articles!.count; index++ {
                 let model = self.articles?.objectAtIndex(index) as! TCWeChatModel
@@ -155,6 +146,18 @@ UITextFieldDelegate {
                     tempArticleModel?.time = model.time
                 }
             }
+        } else if (urlString.hasPrefix("http://yibo.iyiyun.com")) {
+            //查询无结果
+            noResultImageNode!.hidden = false
+            return false
+        } else if (urlString.hasPrefix("http://weixin.sogou.com/antispider")) {
+            //反蜘蛛
+        } else if (urlString.hasPrefix("http://weixin.sogou.com/weixinwap")) {
+            //查询基本页
+            articles?.removeAllObjects()
+            TCWeChatParse.articles(urlString: urlString, completion: { (articles) -> Void in
+                self.articles = articles
+            })
         }
         noResultImageNode?.hidden = true
         return true

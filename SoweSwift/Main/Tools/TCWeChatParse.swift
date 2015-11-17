@@ -52,11 +52,11 @@ class TCWeChatModel {
     var time: Double?
     
     func showSelf() {
-        print("urlString:"+urlString!)
-        print("image:"+image!)
+//        print("urlString:"+urlString!)
+//        print("image:"+image!)
         print("title:"+title!)
-        print("nickname:"+nickname!)
-        print("time:\(time!)\n")
+//        print("nickname:"+nickname!)
+//        print("time:\(time!)\n")
     }
     
     class func article(dataString dataString:String) -> TCWeChatModel {
@@ -71,7 +71,7 @@ class TCWeChatModel {
         model.title = htmlEntityDecode(forString: string(leadingString: "40px\">", tailingString: "</p>\n<p class=\"news_lst_txt3\" style=\"display:none;\">", forString: dataString))
         model.nickname = htmlEntityDecode(forString: string(leadingString: "title=\"", tailingString: "\" i=\"", forString: dataString))
         model.time = Double(string(leadingString: "\" t=\"", tailingString: "\">\n<span target=\"", forString: dataString))
-//        model.showSelf()
+        model.showSelf()
         return model
     }
     

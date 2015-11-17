@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		40F89ADDB278103849A8F47F /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0A9C46B9E6113E138337B708 /* libPods.a */; };
+		681AE0471BFACEC000332F35 /* TCProgressView.m in Sources */ = {isa = PBXBuildFile; fileRef = 681AE0461BFACEC000332F35 /* TCProgressView.m */; };
 		68D670891BF33BAA006503ED /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 68D670881BF33BAA006503ED /* WebKit.framework */; };
 		68D6708B1BF33C13006503ED /* ResultVc.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68D6708A1BF33C13006503ED /* ResultVc.swift */; };
 		68D6708D1BF33C31006503ED /* WXArticleVc.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68D6708C1BF33C31006503ED /* WXArticleVc.swift */; };
@@ -27,6 +28,8 @@
 /* Begin PBXFileReference section */
 		0A9C46B9E6113E138337B708 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		492684026287AC0FA911D102 /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
+		681AE0451BFACEC000332F35 /* TCProgressView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TCProgressView.h; sourceTree = "<group>"; };
+		681AE0461BFACEC000332F35 /* TCProgressView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TCProgressView.m; sourceTree = "<group>"; };
 		68D670881BF33BAA006503ED /* WebKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WebKit.framework; path = System/Library/Frameworks/WebKit.framework; sourceTree = SDKROOT; };
 		68D6708A1BF33C13006503ED /* ResultVc.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ResultVc.swift; sourceTree = "<group>"; };
 		68D6708C1BF33C31006503ED /* WXArticleVc.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WXArticleVc.swift; sourceTree = "<group>"; };
@@ -68,6 +71,15 @@
 				492684026287AC0FA911D102 /* Pods.release.xcconfig */,
 			);
 			name = Pods;
+			sourceTree = "<group>";
+		};
+		681AE0441BFACEC000332F35 /* TCProgressView */ = {
+			isa = PBXGroup;
+			children = (
+				681AE0451BFACEC000332F35 /* TCProgressView.h */,
+				681AE0461BFACEC000332F35 /* TCProgressView.m */,
+			);
+			path = TCProgressView;
 			sourceTree = "<group>";
 		};
 		68D6712A1BF5B2B7006503ED /* ThirdPartys */ = {
@@ -215,6 +227,7 @@
 		68DD38F01BF1BE3F0074DE67 /* Tools */ = {
 			isa = PBXGroup;
 			children = (
+				681AE0441BFACEC000332F35 /* TCProgressView */,
 				68DD38F11BF1BFA10074DE67 /* ResizeScreen.swift */,
 				68D6708E1BF342DB006503ED /* TCJavascriptHelper.swift */,
 				68FB1DFB1BF6DEF20049B75C /* TCWeChatParse.swift */,
@@ -363,6 +376,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				68D6712D1BF5B666006503ED /* TCAppUtils.m in Sources */,
+				681AE0471BFACEC000332F35 /* TCProgressView.m in Sources */,
 				68D6708B1BF33C13006503ED /* ResultVc.swift in Sources */,
 				68FB1DFC1BF6DEF20049B75C /* TCWeChatParse.swift in Sources */,
 				68DD38EE1BF193530074DE67 /* HomeVc.swift in Sources */,

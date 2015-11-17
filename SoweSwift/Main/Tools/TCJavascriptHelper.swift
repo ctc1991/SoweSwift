@@ -12,6 +12,7 @@ class TCJavascriptHelper: NSObject {
     var webView: UIWebView?
     
     func runJsCode(code code:String) -> String {
+//        print(code)
         return webView!.stringByEvaluatingJavaScriptFromString(code)!
     }
     func hideElement(className className:String) {
@@ -28,6 +29,9 @@ class TCJavascriptHelper: NSObject {
     }
     func hideElement(elementId elementId:String) {
         runJsCode(code: "document.getElementById('\(elementId)').style.display='none'")
+    }
+    func element(elementId elementId:String) -> String {
+       return runJsCode(code: "document.getElementById('\(elementId)').innerHTML")
     }
 
 }
