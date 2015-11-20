@@ -111,6 +111,7 @@ UITextFieldDelegate {
         if (urlString.hasPrefix("http://mp.weixin.qq.com/")) {
             let vc = WXArticleVc()
             vc.urlString = urlString
+            vc.isPresent = false
             navigationController?.pushViewController(vc, animated: false)
             webView.alpha = 1
             return false

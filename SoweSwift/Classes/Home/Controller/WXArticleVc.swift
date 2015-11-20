@@ -18,6 +18,7 @@ UIGestureRecognizerDelegate {
     let SCREEN_HEIGHT = UIScreen.mainScreen().bounds.size.height
     var bottomBtn: UIBarButtonItem?
     var topNode: ASDisplayNode?
+    var isPresent: Bool?
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -38,6 +39,9 @@ UIGestureRecognizerDelegate {
          setWebView()
         setTopNode()
 
+    }
+    func hehe() {
+        print("呵呵呵")
     }
     func setTopNode() {
         topNode = ASDisplayNode()
@@ -117,7 +121,11 @@ UIGestureRecognizerDelegate {
             webView?.reload()
     }
     func back() {
-        navigationController?.popViewControllerAnimated(true)
+        if (isPresent == false) {
+            navigationController?.popViewControllerAnimated(true)
+        } else {
+            dismissViewControllerAnimated(true, completion: nil)
+        }
     }
     func share() {
         
