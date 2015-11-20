@@ -17,7 +17,7 @@ UITextFieldDelegate {
     var noResultImageNode: ASImageNode?
     var jsHelper: TCJavascriptHelper?
     var textField: UITextField?
-    var articles: NSMutableArray?
+    var articles: NSMutableArray? = NSMutableArray()
     var tempArticleModel: TCWeChatModel?
     let SCREEN_WIDTH = UIScreen.mainScreen().bounds.size.width
     let SCREEN_HEIGHT = UIScreen.mainScreen().bounds.size.height
@@ -26,13 +26,13 @@ UITextFieldDelegate {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
         view.backgroundColor = UIColor.whiteColor()
-        articles = NSMutableArray()
         setWebView()
-        search(keyword: keyword!)
-        
+
         
         setNavigationBar()
         textField?.text = keyword
+        search(keyword: keyword!)
+        
         
         noResultImageNode = ASImageNode()
         noResultImageNode?.frame = (webView?.bounds)!
@@ -44,19 +44,19 @@ UITextFieldDelegate {
     }
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
-        navigationController?.navigationBar.setBackgroundImage(TCAppUtils.imageWithColor(UIColor(red: 0, green: 0, blue: 0, alpha: 0.99), size: CGSize(width: SCREEN_WIDTH, height: 64)), forBarMetrics: UIBarMetrics.Default)
-        navigationController?.navigationBarHidden = false
+        textField?.text = keyword
+        textField!.placeholder = "点击搜索"
+        textField?.enabled = true
     }
     func setNavigationBar() {
-        
-        
+        navigationController?.navigationBar.setBackgroundImage(TCAppUtils.imageWithColor(UIColor(red: 0, green: 0, blue: 0, alpha: 0.99), size: CGSize(width: SCREEN_WIDTH, height: 64)), forBarMetrics: UIBarMetrics.Default)
         
         let leftBtn = UIBarButtonItem(title: "\u{e604}", style: UIBarButtonItemStyle.Done, target: self, action: "dismiss")
         leftBtn.setTitleTextAttributes([NSFontAttributeName : UIFont(name: "iconfont", size: 32)!,NSForegroundColorAttributeName : UIColor.whiteColor()], forState: UIControlState.Normal)
         navigationItem.leftBarButtonItem = leftBtn
         
-        let rightBtn = UIBarButtonItem(title: "\u{e603}", style: UIBarButtonItemStyle.Done, target: self, action: "refresh")
-        rightBtn.setTitleTextAttributes([NSFontAttributeName : UIFont(name: "iconfont", size: 32)!,NSForegroundColorAttributeName : UIColor.whiteColor()], forState: UIControlState.Normal)
+        let rightBtn = UIBarButtonItem(title: "\u{e607}", style: UIBarButtonItemStyle.Done, target: self, action: "search")
+        rightBtn.setTitleTextAttributes([NSFontAttributeName : UIFont(name: "iconfont", size: 25)!,NSForegroundColorAttributeName : UIColor.whiteColor()], forState: UIControlState.Normal)
         navigationItem.rightBarButtonItem = rightBtn
         
         textField = UITextField(frame: CGRect(x: SCREEN_WIDTH/4.0, y: 0, width: SCREEN_WIDTH/2.0, height: 40))
@@ -66,6 +66,7 @@ UITextFieldDelegate {
         textField!.textAlignment = NSTextAlignment.Center
         textField!.tintColor = UIColor.whiteColor()
         textField!.delegate = self
+        textField?.font = UIFont.boldSystemFontOfSize(20)
         textField!.setValue(UIColor.whiteColor(), forKeyPath: "_placeholderLabel.textColor")
         navigationController?.navigationBar.addSubview(textField!)
     }
@@ -73,11 +74,21 @@ UITextFieldDelegate {
     func search(var keyword keyword: String) {
         keyword = keyword.stringByAddingPercentEncodingWithAllowedCharacters(NSCharacterSet.URLHostAllowedCharacterSet())!
         let urlString = "http://weixin.sogou.com/weixinwap?type=2&query=\(keyword)&page=1"
+        self.keyword = textField?.text
         webView?.loadRequest(NSURLRequest(URL: NSURL(string: urlString)!))
+        textField?.resignFirstResponder()
     }
     
     func dismiss() {
         dismissViewControllerAnimated(true, completion: nil)
+    }
+    func search() {
+        if (textField?.editing != true) {
+            textField?.becomeFirstResponder()
+        } else {
+            search(keyword: textField!.text!)
+        }
+        
     }
     func refresh() {
         if (noResultImageNode!.hidden == true) {
@@ -112,9 +123,30 @@ UITextFieldDelegate {
             let vc = WXArticleVc()
             vc.urlString = urlString
             vc.isPresent = false
-            navigationController?.pushViewController(vc, animated: false)
+            vc.model = tempArticleModel
+            vc.model?.urlString = urlString
+            vc.textField = textField
+            textField?.text = ""
+            textField!.placeholder = ""
+            textField?.enabled = false
+            navigationController?.pushViewController(vc, animated: true)
             webView.alpha = 1
             return false
+        }  else if (urlString.hasPrefix("http://weixin.sogou.com/websearch")) {
+            //请求文章页
+            for var index=0; index<self.articles!.count; index++ {
+                let model = self.articles?.objectAtIndex(index) as! TCWeChatModel
+                let sg10_1 = TCWeChatParse.sg10(model.urlString!)
+                let sg10_2 = TCWeChatParse.sg10(urlString)
+                if (sg10_1 == sg10_2) {
+                    tempArticleModel = TCWeChatModel()
+                    tempArticleModel?.urlString = model.urlString
+                    tempArticleModel?.image = model.image
+                    tempArticleModel?.title = model.title
+                    tempArticleModel?.nickname = model.nickname
+                    tempArticleModel?.time = model.time
+                }
+            }
         } else if (urlString.hasPrefix("http://yibo.iyiyun.com")) {
             //查询无结果
             noResultImageNode!.hidden = false
@@ -127,26 +159,11 @@ UITextFieldDelegate {
             TCWeChatParse.articles(urlString: urlString, completion: { (articles) -> Void in
                 self.articles = articles
             })
-        } else if (urlString.hasPrefix("http://weixin.sogou.com/websearch")) {
-            //请求文章页
-
-            
-            for var index=0; index<self.articles!.count; index++ {
-                let model = self.articles?.objectAtIndex(index) as! TCWeChatModel
-                let sg10_1 = TCWeChatParse.sg10(model.urlString!)
-                let sg10_2 = TCWeChatParse.sg10(urlString)
-                if (sg10_1 == sg10_2) {
-                    print("horry")
-                }
-            }
-         
         }
         noResultImageNode?.hidden = true
         return true
     }
-    
     func webViewDidFinishLoad(webView: UIWebView) {
-        
         //隐藏常规界面
         jsHelper?.hideElement(className: "rss_bx")
         jsHelper?.hideElement(className: "searchBox")
@@ -161,6 +178,9 @@ UITextFieldDelegate {
         jsHelper?.hideElement(className: "h12")
         jsHelper?.hideElement(tagName: "table", index: 0)
         jsHelper?.hideElement(tagName: "table", index: 3)
+        //出现反蜘蛛页面
+        jsHelper?.hideElement(className: "header", index: 0)
+        jsHelper?.hideElement(elementId: "ft")
         //搜不到结果
         jsHelper?.hideElement(className: "beg_box", index: 0)
         

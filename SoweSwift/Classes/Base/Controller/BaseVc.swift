@@ -25,7 +25,7 @@ class BaseVc: UIViewController {
         let vc = WXArticleVc()
         vc.isPresent = true
         vc.urlString = urlString
-        presentViewController(vc, animated: true, completion: nil)
+        presentViewController(UINavigationController(rootViewController: vc), animated: true, completion: nil)
     }
 
 }
