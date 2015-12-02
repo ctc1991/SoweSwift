@@ -110,6 +110,7 @@ UIGestureRecognizerDelegate {
             self.webView?.scrollView.mj_header.endRefreshing()
         })
         webView?.scrollView.contentOffset = CGPoint(x: 0, y: -64)
+
     }
     
     func setNavigationBar() {
