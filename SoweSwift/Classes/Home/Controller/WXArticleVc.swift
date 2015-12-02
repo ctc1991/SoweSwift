@@ -20,6 +20,7 @@ UIGestureRecognizerDelegate {
     var bottomBtn: UIButton?
     var topBtn: UIButton?
     var topNode: ASDisplayNode?
+    var isPresent: Bool?
     var model: TCWeChatModel?
     var textField: UITextField?
     var nickname: String?
@@ -65,6 +66,9 @@ UIGestureRecognizerDelegate {
         floatNode?.view.addSubview(bottomBtn!)
         
         
+    }
+    func hehe() {
+        print("呵呵呵")
     }
     func setTopNode() {
         topNode = ASDisplayNode()
@@ -164,7 +168,11 @@ UIGestureRecognizerDelegate {
             webView?.reload()
     }
     func back() {
-        navigationController?.popViewControllerAnimated(true)
+        if (isPresent == false) {
+            navigationController?.popViewControllerAnimated(true)
+        } else {
+            dismissViewControllerAnimated(true, completion: nil)
+        }
     }
     func share() {
         

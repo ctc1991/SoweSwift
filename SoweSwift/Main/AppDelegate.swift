@@ -22,6 +22,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         window?.backgroundColor = UIColor.whiteColor()
         return true
     }
-
+    
+    func applicationWillEnterForeground(application: UIApplication) {
+        let pasteBoard = UIPasteboard.generalPasteboard()
+        if (pasteBoard.string!.hasPrefix("http://mp.weixin.qq.com/")) {
+            NSNotificationCenter.defaultCenter().postNotificationName("ArticleFromPasteBoard", object: pasteBoard.string)
+        }
+    }
 }
 

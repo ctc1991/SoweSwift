@@ -122,6 +122,7 @@ UITextFieldDelegate {
         if (urlString.hasPrefix("http://mp.weixin.qq.com/")) {
             let vc = WXArticleVc()
             vc.urlString = urlString
+            vc.isPresent = false
             vc.model = tempArticleModel
             vc.model?.urlString = urlString
             vc.textField = textField
