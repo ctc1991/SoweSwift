@@ -111,6 +111,7 @@ UIGestureRecognizerDelegate {
             self.webView?.scrollView.mj_header.endRefreshing()
         })
         webView?.scrollView.contentOffset = CGPoint(x: 0, y: -64)
+
     }
     func setToolbar() {
 //        let toolBar = UIToolbar(frame: CGRect(x: 0, y: SCREEN_HEIGHT-44, width: SCREEN_WIDTH, height: 44))
