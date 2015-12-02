@@ -37,6 +37,10 @@ UIGestureRecognizerDelegate {
         super.viewWillAppear(animated)
         textField?.text = nickname
     }
+    override func viewDidAppear(animated: Bool) {
+        super.viewDidAppear(animated)
+        TCProgressView.dismiss()
+    }
     func initUI() {
 //        setToolbar()
         setWebView()
@@ -66,9 +70,6 @@ UIGestureRecognizerDelegate {
         floatNode?.view.addSubview(bottomBtn!)
         
         
-    }
-    func hehe() {
-        print("呵呵呵")
     }
     func setTopNode() {
         topNode = ASDisplayNode()
@@ -104,64 +105,26 @@ UIGestureRecognizerDelegate {
         webView!.backgroundColor = UIColor.whiteColor()
         jsHelper = TCJavascriptHelper()
         jsHelper?.webView = webView
-        
-        
-        let viewTest = UIView(frame: CGRect(x: 0, y: -100, width: 300, height: 100))
-        viewTest.backgroundColor = UIColor.redColor()
-//        webView?.scrollView.addSubview(viewTest)
-        
         webView?.scrollView.mj_header = MJRefreshNormalHeader(refreshingBlock: { () -> Void in
             self.refresh()
             self.webView?.scrollView.mj_header.endRefreshing()
         })
         webView?.scrollView.contentOffset = CGPoint(x: 0, y: -64)
     }
-    func setToolbar() {
-//        let toolBar = UIToolbar(frame: CGRect(x: 0, y: SCREEN_HEIGHT-44, width: SCREEN_WIDTH, height: 44))
-//        view.addSubview(toolBar)
-//        
-//        let backBtn = UIBarButtonItem(title: "\u{e601}", style: UIBarButtonItemStyle.Done, target: self, action: "back")
-//        let shareBtn = UIBarButtonItem(title: "\u{e600}", style: UIBarButtonItemStyle.Done, target: self, action: "share")
-//        bottomBtn = UIBarButtonItem(title: "\u{e602}", style: UIBarButtonItemStyle.Done, target: self, action: "goToBottom")
-//        let topBtn = UIBarButtonItem(title: "\u{e60E}", style: UIBarButtonItemStyle.Done, target: self, action: "goToTop")
-//        let weChatBtn = UIBarButtonItem(title: "\u{e60B}", style: UIBarButtonItemStyle.Done, target: self, action: "goToWeChat")
-//        
-//        
-//        
-//        setTextAttributes(forBarButtonItem: backBtn, fontSize: 25)
-//        setTextAttributes(forBarButtonItem: shareBtn, fontSize: 25)
-//        setTextAttributes(forBarButtonItem: bottomBtn!, fontSize: 25)
-//        setTextAttributes(forBarButtonItem: topBtn, fontSize: 25)
-//        setTextAttributes(forBarButtonItem: weChatBtn, fontSize: 25)
-//        
-//        let line = UIView(frame: CGRect(x: 0, y: 0, width: SCREEN_WIDTH, height: 1))
-//        line.backgroundColor = UIColor.blackColor()
-//        toolBar.addSubview(line)
-//        
-//        let flexItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.FlexibleSpace, target: nil, action: nil)
-//        let fixedItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.FixedSpace, target: nil, action: nil)
-//        
-//        toolBar.setItems([fixedItem,backBtn,flexItem,shareBtn,flexItem,topBtn,flexItem,bottomBtn!,fixedItem], animated: false)
-    }
+    
     func setNavigationBar() {
-        
         navigationController?.navigationBar.tintColor = UIColor.whiteColor()
+        if (isPresent == true) {
+            navigationController?.navigationBar.setBackgroundImage(TCAppUtils.imageWithColor(UIColor(red: 0, green: 0, blue: 0, alpha: 0.99), size: CGSize(width: SCREEN_WIDTH, height: 64)), forBarMetrics: UIBarMetrics.Default)
+            
+            let leftBtn = UIBarButtonItem(title: "\u{e604}", style: UIBarButtonItemStyle.Done, target: self, action: "back")
+            leftBtn.setTitleTextAttributes([NSFontAttributeName : UIFont(name: "iconfont", size: 32)!,NSForegroundColorAttributeName : UIColor.whiteColor()], forState: UIControlState.Normal)
+            navigationItem.leftBarButtonItem = leftBtn
+        }
         
-        
-        let rightBtn = UIBarButtonItem(title: "\u{e610}", style: UIBarButtonItemStyle.Done, target: self, action: "share")
-        rightBtn.setTitleTextAttributes([NSFontAttributeName : UIFont(name: "iconfont", size: 32)!,NSForegroundColorAttributeName : UIColor.whiteColor()], forState: UIControlState.Normal)
-        navigationItem.rightBarButtonItem = rightBtn
-        
-//        textField = UITextField(frame: CGRect(x: SCREEN_WIDTH/4.0, y: 0, width: SCREEN_WIDTH/2.0, height: 40))
-//        textField!.backgroundColor = UIColor.clearColor()
-//        textField!.placeholder = "点击搜索"
-//        textField!.textColor = UIColor.whiteColor()
-//        textField!.textAlignment = NSTextAlignment.Center
-//        textField!.tintColor = UIColor.whiteColor()
-//        textField!.delegate = self
-//        textField?.font = UIFont.boldSystemFontOfSize(20)
-//        textField!.setValue(UIColor.whiteColor(), forKeyPath: "_placeholderLabel.textColor")
-//        navigationController?.navigationBar.addSubview(textField!)
+            let rightBtn = UIBarButtonItem(title: "\u{e610}", style: UIBarButtonItemStyle.Done, target: self, action: "share")
+            rightBtn.setTitleTextAttributes([NSFontAttributeName : UIFont(name: "iconfont", size: 32)!,NSForegroundColorAttributeName : UIColor.whiteColor()], forState: UIControlState.Normal)
+            navigationItem.rightBarButtonItem = rightBtn
     }
     func refresh() {
             webView?.reload()
@@ -174,13 +137,17 @@ UIGestureRecognizerDelegate {
         }
     }
     func share() {
-        
+        print("标题：\((model?.title)!)\n内容：\((model?.content)!)\n配图：\((model?.image)!)")
+        share(title: (model?.title)!, content: (model?.content)!, image: (model?.image)!, url: urlString!)
     }
     func goToBottom() {
         let height:String = (self.jsHelper?.runJsCode(code: "document.body.offsetHeight"))!
         UIView.animateWithDuration(0.3) { () -> Void in
             self.jsHelper?.runJsCode(code: "window.scrollBy(0, \(height))")
         }
+    }
+    func follow() {
+        
     }
     func goToTop() {
         let goToTop = POPSpringAnimation(propertyNamed: kPOPScrollViewContentOffset)
@@ -205,17 +172,27 @@ UIGestureRecognizerDelegate {
     }
     func webViewDidFinishLoad(webView: UIWebView) {
         TCProgressView.dismiss()
-
-//        jsHelper?.hideElement(elementId: "activity-name")
         jsHelper?.hideElement(elementId: "js_view_source")
-//        jsHelper?.hideElement(className: "rich_media_meta_list")
-        textField?.text = jsHelper?.element(elementId: "post-user")
-        nickname = textField!.text
-        if (nickname == model?.nickname) {
-            //信息对称 分享才用图
-            print("nickname相等")
+        if (isPresent == false) {
+            
+            textField?.text = jsHelper?.element(elementId: "post-user")
+            nickname = textField!.text
+            if (nickname == model?.nickname) {
+                //信息对称 分享才用图
+                print("nickname相等")
+            } else {
+                print("信息不对称")
+            }
         } else {
-            print("信息不对称")
+            print("来自PasteBoard")
+            let label = UILabel(frame: CGRect(x: SCREEN_WIDTH/4.0, y: 0, width: SCREEN_WIDTH/2.0, height: 40))
+            label.backgroundColor = UIColor.clearColor()
+            label.textColor = UIColor.whiteColor()
+            label.textAlignment = NSTextAlignment.Center
+            label.tintColor = UIColor.whiteColor()
+            label.font = UIFont.boldSystemFontOfSize(20)
+            navigationController?.navigationBar.addSubview(label)
+            label.text = jsHelper?.element(elementId: "post-user")
         }
     }
 

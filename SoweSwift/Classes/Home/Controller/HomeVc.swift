@@ -46,7 +46,7 @@ class HomeVc: BaseVc,
         backgroundImageNode = ASImageNode()
         backgroundImageNode?.frame = UIScreen.mainScreen().bounds
         backgroundImageNode?.backgroundColor = UIColor.whiteColor()
-        backgroundImageNode?.image = UIImage(named: "bg_7")
+        backgroundImageNode?.image = UIImage(named: "bg_8")
         view.addSubnode(backgroundImageNode)
     }
     /** 设置滑动界面 */
@@ -145,6 +145,14 @@ class HomeVc: BaseVc,
         collectionView?.registerClass(HomeCell.self, forCellWithReuseIdentifier: "HomeCell")
         collectionView?.dataSource = self
         midNode?.view.addSubview(collectionView!)
+        
+        
+        let shimmeringView = FBShimmeringView(frame: (midNode?.frame)!)
+        scrollNode?.view.addSubview(shimmeringView)
+        shimmeringView.contentView = midNode?.view
+        shimmeringView.shimmeringSpeed = 120
+        shimmeringView.shimmering = true
+
     }
     func setBotNode() {
         botNode = setScrollNodeSubview(CGRectMake(0, SCREEN_HEIGHT+0.5*offsetY, SCREEN_WIDTH, offsetY*0.5))
@@ -174,10 +182,10 @@ class HomeVc: BaseVc,
         midNode?.view.pop_removeAllAnimations()
         midNode?.view.pop_addAnimation(animAlpha, forKey: "animAlpha")
         
-        let animScale = POPBasicAnimation(propertyNamed: kPOPViewSize)
+        let animScale = POPBasicAnimation(propertyNamed: kPOPLayerScaleXY)
         animScale.duration = 0.4
-        animScale.toValue = NSValue(CGSize: CGSizeMake(view.bounds.size.width*1.7, view.bounds.size.height*1.7))
-        backgroundImageNode?.view.pop_addAnimation(animScale, forKey: "scale0")
+        animScale.toValue = NSValue(CGSize: CGSize(width: 1.2, height: 1.2))
+        backgroundImageNode?.layer.pop_addAnimation(animScale, forKey: "scale0")
         
         searchMaskNode?.hidden = false
         
@@ -207,10 +215,10 @@ class HomeVc: BaseVc,
         midNode?.view.pop_removeAllAnimations()
         midNode?.view.pop_addAnimation(animAlpha, forKey: "animAlpha")
         
-        let animScale = POPBasicAnimation(propertyNamed: kPOPViewSize)
+        let animScale = POPBasicAnimation(propertyNamed: kPOPLayerScaleXY)
         animScale.duration = 0.2
-        animScale.toValue = NSValue(CGSize: CGSizeMake(view.bounds.size.width*1,view.bounds.size.height*1))
-        backgroundImageNode?.view.pop_addAnimation(animScale, forKey: "scale01")
+        animScale.toValue = NSValue(CGSize: CGSize(width: 1, height: 1))
+        backgroundImageNode?.layer.pop_addAnimation(animScale, forKey: "scale01")
         
         searchMaskNode?.hidden = true
     }
@@ -228,14 +236,16 @@ class HomeVc: BaseVc,
         self.presentViewController(UINavigationController(rootViewController: vc), animated: true, completion: nil)
     }
     func scrollViewDidScroll(scrollView: UIScrollView) {
-        var ratio = (offsetY - scrollView.contentOffset.y)/offsetY
-        ratio = (0.7+ratio) > 2 ? 2 : (0.7+ratio)
-        ratio = ratio < 1 ? 1 : ratio
+
+        var ratio = ((offsetY - scrollView.contentOffset.y)/(offsetY*2))*0.4
+        ratio = ratio + 1
+        ratio < 1 ? 1 : ratio
+
         
-        let animScale = POPBasicAnimation(propertyNamed: kPOPViewSize)
+        let animScale = POPBasicAnimation(propertyNamed: kPOPLayerScaleXY)
         animScale.duration = 0.1
-        animScale.toValue = NSValue(CGSize: CGSizeMake(view.bounds.size.width*ratio,view.bounds.size.height*ratio))
-        backgroundImageNode?.view.pop_addAnimation(animScale, forKey: "scale")
+        animScale.toValue = NSValue(CGSize: CGSizeMake(ratio,ratio))
+        backgroundImageNode?.layer.pop_addAnimation(animScale, forKey: "scale")
         
         //        print(ratio)
         if (scrollView.tag == 10086) {
@@ -258,7 +268,12 @@ class HomeVc: BaseVc,
         hideTextField()
     }
     func textFieldShouldReturn(textField: UITextField) -> Bool {
-        search(keyword: textField.text!)
+        if (textField.text?.isEmpty == true) {
+            TCTopAlertView.showMessage("请正确输入！")
+            return true
+        } else {
+            search(keyword: textField.text!)
+        }
         return true
     }
     func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {

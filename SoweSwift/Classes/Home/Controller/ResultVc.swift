@@ -110,11 +110,6 @@ UITextFieldDelegate {
             self.refresh()
             self.webView?.scrollView.mj_header.endRefreshing()
         })
-//        webView?.scrollView.mj_footer = MJRefreshBackStateFooter(refreshingBlock: { () -> Void in
-//            self.dismiss()
-//            self.webView?.scrollView.mj_footer.endRefreshing()
-//        })
- 
     }
     func webView(webView: UIWebView, shouldStartLoadWithRequest request: NSURLRequest, navigationType: UIWebViewNavigationType) -> Bool {
         webView.alpha = 0
@@ -145,6 +140,7 @@ UITextFieldDelegate {
                     tempArticleModel?.title = model.title
                     tempArticleModel?.nickname = model.nickname
                     tempArticleModel?.time = model.time
+                    tempArticleModel?.content = model.content
                 }
             }
         } else if (urlString.hasPrefix("http://yibo.iyiyun.com")) {
@@ -194,7 +190,12 @@ UITextFieldDelegate {
         textField!.resignFirstResponder()
     }
     func textFieldShouldReturn(textField: UITextField) -> Bool {
-        search(keyword: textField.text!)
+        if (textField.text?.isEmpty == true) {
+            TCTopAlertView.showMessage("请正确输入！")
+            return true
+        } else {
+            search(keyword: textField.text!)
+        }
         textField.resignFirstResponder()
         return true
     }
